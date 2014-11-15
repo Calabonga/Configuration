@@ -19,29 +19,31 @@ namespace Calabonga.Portal.Config {
                 try {
                     return (T)formatter.Deserialize(st);
                 }
-                    
-                finally {
-                    st.Close();
+
+                catch {
                 }
             }
+            return default(T);
         }
 
         public string SerializeObject<T>(T config) where T : class {
 
-            var ms = new MemoryStream();
-            var formatter = new XmlSerializer(typeof(T));
-            try {
-                formatter.Serialize(ms, config);
-                ms.Position = 0;
-                string result;
-                using (var sr = new StreamReader(ms)) {
-                    result = sr.ReadToEnd();
+            using (var ms = new MemoryStream()) {
+
+                var formatter = new XmlSerializer(typeof(T));
+                try {
+                    formatter.Serialize(ms, config);
+                    ms.Position = 0;
+                    string result;
+                    using (var sr = new StreamReader(ms)) {
+                        result = sr.ReadToEnd();
+                    }
+                    return result;
                 }
-                return result;
+                catch {
+                }
             }
-            finally {
-                ms.Close();
-            }
+            return null;
         }
     }
 }
