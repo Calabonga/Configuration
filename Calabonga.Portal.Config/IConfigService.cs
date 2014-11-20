@@ -1,3 +1,5 @@
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Calabonga.Portal.Config
@@ -24,5 +26,21 @@ namespace Calabonga.Portal.Config
         /// Reload from configuration file
         /// </summary>
         void Reload();
+
+        /// <summary>
+        /// Read a value from config element
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
+        TValue ReadValue<TValue>(Expression<Func<TConfig, TValue>> propertiyExpression );
+        
+        /// <summary>
+        /// Read a value from configuration file
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
+        TValue ReadValue<TValue>(string propertyName);
+
     }
 }
