@@ -8,12 +8,12 @@ namespace Calabonga.Portal.Config {
     /// <typeparam name="TConfig"></typeparam>
     public class ConfigServiceBase<TConfig> : AppConfigrReader<TConfig> where TConfig : class {
 
-        public ConfigServiceBase(IConfigSerializer serializer)
-            : base(serializer) {
+        public ConfigServiceBase(IConfigSerializer serializer, ICacheService cacheService)
+            : base(serializer, cacheService) {
         }
 
-        public ConfigServiceBase(string configFileName, IConfigSerializer serializer)
-            : base(configFileName, serializer) {
+        public ConfigServiceBase(string configFileName, IConfigSerializer serializer, ICacheService cacheService)
+            : base(configFileName, serializer, cacheService) {
         }
 
         /// <summary>

@@ -1,6 +1,5 @@
 using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Calabonga.Portal.Config
 {
@@ -20,7 +19,7 @@ namespace Calabonga.Portal.Config
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Task SaveChanges(TConfig model);
+        void SaveChanges(TConfig model);
 
         /// <summary>
         /// Reload from configuration file

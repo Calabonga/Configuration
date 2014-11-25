@@ -2,9 +2,8 @@ using System;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Web;
-using System.Web.ModelBinding;
+using System.Web.Caching;
 
 namespace Calabonga.Portal.Config {
 
@@ -13,18 +12,20 @@ namespace Calabonga.Portal.Config {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class AppConfigrReader<T> : IConfigService<T> where T : class {
-
+        private const string CacheKey = "MvcConfigKeyName";
         private T _appSettings;
         private readonly string _fileNameSettings = "AppConfig.cfg";
+        private readonly ICacheService _cacheService;
         private readonly IConfigSerializer _serializer;
         private readonly string _directoryConfig = HttpContext.Current.Server.MapPath("~/App_Config");
 
-        protected AppConfigrReader(IConfigSerializer serializer) {
+        protected AppConfigrReader(IConfigSerializer serializer, ICacheService cacheService) {
             _serializer = serializer;
+            _cacheService = cacheService;
         }
 
-        protected AppConfigrReader(string configFileName, IConfigSerializer serializer)
-            : this(serializer) {
+        protected AppConfigrReader(string configFileName, IConfigSerializer serializer, ICacheService cacheService)
+            : this(serializer, cacheService) {
             _fileNameSettings = configFileName;
         }
 
@@ -33,6 +34,7 @@ namespace Calabonga.Portal.Config {
         /// Reload data from config file
         /// </summary>
         public void Reload() {
+            _cacheService.Reset(CacheKey);
             DeserealizeSettings();
         }
 
@@ -51,14 +53,14 @@ namespace Calabonga.Portal.Config {
             if (propInfo == null)
                 throw new ArgumentException(string.Format(
                     "Expression '{0}' refers to a field, not a property.",
-                    e.ToString()));
+                    e));
 
             try {
 
                 return (TValue)propInfo.GetValue(Config, null);
             }
-            catch (Exception) {
-                throw;
+            catch (ArgumentException exception) {
+                throw new ArgumentException("Property not found in configuration", exception);
             }
         }
 
@@ -68,8 +70,8 @@ namespace Calabonga.Portal.Config {
 
                 return (TValue)type.GetProperty(propertyName).GetValue(Config);
             }
-            catch (Exception) {
-                throw;
+            catch (ArgumentNullException exception) {
+                throw new ArgumentNullException(@"Property not found in configuration", exception);
             }
         }
 
@@ -78,8 +80,8 @@ namespace Calabonga.Portal.Config {
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public async Task SaveChanges(T config) {
-            await Serialize(config);
+        public void SaveChanges(T config) {
+            Serialize(config);
         }
 
 
@@ -90,7 +92,10 @@ namespace Calabonga.Portal.Config {
         public T Config {
             get {
                 if (_appSettings == null) {
-                    DeserealizeSettings();
+                    _appSettings = _cacheService.Read<T>(CacheKey);
+                    if (_appSettings == null) {
+                        DeserealizeSettings();
+                    }
                 }
                 return _appSettings;
             }
@@ -108,8 +113,13 @@ namespace Calabonga.Portal.Config {
         }
 
         private T Import(string data) {
-            var o = _serializer.DeserializeObject<T>(data);
-            return string.IsNullOrEmpty(data) ? null : o;
+            try {
+                var o = _serializer.DeserializeObject<T>(data);
+                return string.IsNullOrEmpty(data) ? null : o;
+            }
+            catch (InvalidOperationException exception) {
+                throw new InvalidOperationException("Can't deserialize current configuration.", exception);
+            }
         }
 
         private string CreateDefaultAppSettings() {
@@ -144,16 +154,18 @@ namespace Calabonga.Portal.Config {
         private void DeserealizeSettings() {
             var data = LoadSettings();
             _appSettings = Import(data);
+            _cacheService.Insert(CacheKey, _appSettings, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(3));
         }
 
-        private async Task Serialize(T config) {
+        private void Serialize(T config) {
             try {
                 var data = _serializer.SerializeObject(config);
                 if (data != null) {
                     using (var sw = File.CreateText(Path.Combine(_directoryConfig, _fileNameSettings))) {
-                        await sw.WriteAsync(data);
+                        sw.Write(data);
                     }
                 }
+
             }
             catch { }
         }
