@@ -17,7 +17,7 @@ namespace Calabonga.Portal.Config {
         private readonly string _fileNameSettings = "AppConfig.cfg";
         private readonly ICacheService _cacheService;
         private readonly IConfigSerializer _serializer;
-        private readonly string _directoryConfig = HttpContext.Current.Server.MapPath("~/App_Config");
+        private readonly string _directoryConfig = HttpContext.Current.Server.MapPath("~/");
 
         protected AppConfigrReader(IConfigSerializer serializer, ICacheService cacheService) {
             _serializer = serializer;
