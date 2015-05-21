@@ -63,6 +63,12 @@ namespace Calabonga.Portal.Config {
     /// Cache service for MvcConfig
     /// </summary>
     public class CacheService : ICacheService {
+
+        public CacheService( )
+        {
+
+        }
+
         /// <summary>
         /// Сохранение в кэш
         /// </summary>
@@ -72,6 +78,7 @@ namespace Calabonga.Portal.Config {
         /// <param name="slidingExpiration"></param>
         public void Insert(string key, object value, DateTime absoluteExparation, TimeSpan slidingExpiration) {
             if (value == null) return;
+            if (HttpContext.Current == null || HttpContext.Current.Cache == null) return;
             HttpContext.Current.Cache.Insert(key, value, null, absoluteExparation, slidingExpiration);
         }
 
@@ -84,7 +91,7 @@ namespace Calabonga.Portal.Config {
         /// <returns></returns>
         public T Read<T>(string key, T defaultValue) where T : class {
             if (defaultValue == null) throw new ArgumentNullException("defaultValue");
-
+            if (HttpContext.Current == null || HttpContext.Current.Cache == null) return null;
             if (HttpContext.Current.Cache[key] == null) return defaultValue;
             var result = HttpContext.Current.Cache[key];
             if (result != null) {
@@ -110,6 +117,7 @@ namespace Calabonga.Portal.Config {
         public T Read<T>(string key, T value, DateTime absoluteExpiration, TimeSpan slidingExpiration) where T : class {
             if (absoluteExpiration == null) throw new ArgumentNullException("absoluteExpiration");
             if (slidingExpiration == null) throw new ArgumentNullException("slidingExpiration");
+            if (HttpContext.Current == null || HttpContext.Current.Cache == null) return null;
             if (HttpContext.Current.Cache[key] == null) {
                 Insert(key, value, absoluteExpiration, slidingExpiration);
                 return value;
@@ -132,6 +140,7 @@ namespace Calabonga.Portal.Config {
         /// <param name="key"></param>
         /// <returns></returns>
         public bool HasKey(string key) {
+            if (HttpContext.Current == null || HttpContext.Current.Cache == null) return false;
             return HttpContext.Current.Cache[key] != null;
         }
 
@@ -142,6 +151,7 @@ namespace Calabonga.Portal.Config {
         /// <param name="key">название параметра (ключ)</param>
         /// <returns></returns>
         public T Read<T>(string key) where T : class {
+            if (HttpContext.Current == null || HttpContext.Current.Cache == null) return null;
             if (HttpContext.Current.Cache[key] == null) return null;
 
             var result = HttpContext.Current.Cache[key];
@@ -160,6 +170,7 @@ namespace Calabonga.Portal.Config {
         /// Сброс кэша
         /// </summary>
         public void Reset(string key) {
+            if (HttpContext.Current == null || HttpContext.Current.Cache == null) return;
             if (HttpContext.Current.Cache[key] != null) {
                 HttpContext.Current.Cache.Remove(key);
             }

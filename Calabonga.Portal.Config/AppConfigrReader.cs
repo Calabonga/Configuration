@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Web;
 using System.Web.Caching;
+using System.Web.Hosting;
 
 namespace Calabonga.Portal.Config {
 
@@ -17,11 +18,12 @@ namespace Calabonga.Portal.Config {
         private readonly string _fileNameSettings = "AppConfig.cfg";
         private readonly ICacheService _cacheService;
         private readonly IConfigSerializer _serializer;
-        private readonly string _directoryConfig = HttpContext.Current.Server.MapPath("~/");
+        private readonly string _directoryConfig;
 
         protected AppConfigrReader(IConfigSerializer serializer, ICacheService cacheService) {
             _serializer = serializer;
             _cacheService = cacheService;
+            _directoryConfig = HttpContext.Current != null ? HttpContext.Current.Server.MapPath("~/") : HostingEnvironment.MapPath("~/");
         }
 
         protected AppConfigrReader(string configFileName, IConfigSerializer serializer, ICacheService cacheService)
@@ -34,6 +36,7 @@ namespace Calabonga.Portal.Config {
         /// Reload data from config file
         /// </summary>
         public void Reload() {
+
             _cacheService.Reset(CacheKey);
             DeserealizeSettings();
         }
@@ -156,6 +159,7 @@ namespace Calabonga.Portal.Config {
             _appSettings = Import(data);
             _cacheService.Insert(CacheKey, _appSettings, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(3));
         }
+
 
         private void Serialize(T config) {
             try {
