@@ -9,7 +9,7 @@ using System.Web.Hosting;
 namespace Calabonga.Portal.Config {
 
     /// <summary>
-    /// Congiguration reader
+    /// Configuration reader
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class AppConfigrReader<T> : IConfigService<T> where T : class {
