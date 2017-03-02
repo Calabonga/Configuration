@@ -1,7 +1,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Calabonga.Configuration {
+namespace Calabonga.Configurations {
     /// <summary>
     /// Configuration serializer for XML-format
     /// </summary>

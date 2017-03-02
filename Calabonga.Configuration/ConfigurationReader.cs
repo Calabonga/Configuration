@@ -1,13 +1,12 @@
 using System;
 using System.IO;
 using System.Linq.Expressions;
-using System.Net;
 using System.Reflection;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
 
-namespace Calabonga.Configuration {
+namespace Calabonga.Configurations {
 
     /// <summary>
     /// Configuration reader

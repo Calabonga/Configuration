@@ -7,8 +7,8 @@
     <ProjectGuid>{60EDE1E1-9244-4911-A1AF-279B7640F1DB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Calabonga.Configuration</RootNamespace>
-    <AssemblyName>Calabonga.Configuration</AssemblyName>
+    <RootNamespace>Calabonga.Configurations</RootNamespace>
+    <AssemblyName>Calabonga.Configurations</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

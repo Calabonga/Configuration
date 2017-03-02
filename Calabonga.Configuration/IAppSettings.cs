@@ -1,4 +1,4 @@
-﻿namespace Calabonga.Configuration {
+﻿namespace Calabonga.Configurations {
     /// <summary>
     /// Default configuration settings for application
     /// </summary>

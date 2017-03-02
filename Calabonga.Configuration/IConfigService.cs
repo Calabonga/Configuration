@@ -1,7 +1,7 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Calabonga.Configuration {
+namespace Calabonga.Configurations {
     /// <summary>
     /// Configuration service wrappper
     /// </summary>

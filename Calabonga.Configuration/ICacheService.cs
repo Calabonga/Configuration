@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 
-namespace Calabonga.Configuration {
+namespace Calabonga.Configurations {
 
     /// <summary>
     /// Cache service

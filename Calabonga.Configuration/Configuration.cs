@@ -1,4 +1,4 @@
-namespace Calabonga.Configuration {
+namespace Calabonga.Configurations {
 
     /// <summary>
     /// Service for access to MVC application settings

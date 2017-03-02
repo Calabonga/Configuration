@@ -1,4 +1,4 @@
-namespace Calabonga.Configuration {
+namespace Calabonga.Configurations {
 
     /// <summary>
     /// Serializator for config file

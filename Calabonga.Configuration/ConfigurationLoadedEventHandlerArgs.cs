@@ -1,6 +1,6 @@
 using System;
 
-namespace Calabonga.Configuration
+namespace Calabonga.Configurations
 {
     /// <summary>
     /// Configuration items Loaded event arguments
