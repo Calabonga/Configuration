@@ -1,13 +1,18 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Calabonga.Portal.Config {
+namespace Calabonga.Configuration {
     /// <summary>
-    /// Default serializer for config settings 
-    /// use Xml format
+    /// Configuration serializer for XML-format
     /// </summary>
-    public class DefaultConfigSerializer : IConfigSerializer {
+    public class XmlConfigSerializer : IConfigSerializer {
 
+        /// <summary>
+        /// Read and Deserialize string data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public T DeserializeObject<T>(string value) {
             if (value == null) {
                 return default(T);
@@ -20,11 +25,19 @@ namespace Calabonga.Portal.Config {
                 }
 
                 catch {
+                    // ignored
                 }
             }
             return default(T);
         }
 
+
+        /// <summary>
+        /// Serialize and return
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public string SerializeObject<T>(T config) where T : class {
 
             using (var ms = new MemoryStream()) {
@@ -40,6 +53,7 @@ namespace Calabonga.Portal.Config {
                     return result;
                 }
                 catch {
+                    // ignored
                 }
             }
             return null;

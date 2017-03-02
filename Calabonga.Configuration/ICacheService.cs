@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 
-namespace Calabonga.Portal.Config {
+namespace Calabonga.Configuration {
 
     /// <summary>
     /// Cache service
@@ -64,8 +64,7 @@ namespace Calabonga.Portal.Config {
     /// </summary>
     public class CacheService : ICacheService {
 
-        public CacheService( )
-        {
+        public CacheService() {
 
         }
 
@@ -90,7 +89,7 @@ namespace Calabonga.Portal.Config {
         /// <param name="defaultValue">значение по умолчанию</param>
         /// <returns></returns>
         public T Read<T>(string key, T defaultValue) where T : class {
-            if (defaultValue == null) throw new ArgumentNullException("defaultValue");
+            if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
             if (HttpContext.Current == null || HttpContext.Current.Cache == null) return null;
             if (HttpContext.Current.Cache[key] == null) return defaultValue;
             var result = HttpContext.Current.Cache[key];

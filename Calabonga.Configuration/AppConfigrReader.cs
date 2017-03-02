@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
 
-namespace Calabonga.Portal.Config {
+namespace Calabonga.Configuration {
 
     /// <summary>
     /// Configuration reader
@@ -15,28 +15,23 @@ namespace Calabonga.Portal.Config {
     public abstract class AppConfigrReader<T> : IConfigService<T> where T : class {
         private const string CacheKey = "MvcConfigKeyName";
         private T _appSettings;
-        private readonly string _fileNameSettings = "AppConfig.cfg";
+        private readonly string _fileNameSettings;
         private readonly ICacheService _cacheService;
         private readonly IConfigSerializer _serializer;
         private readonly string _directoryConfig;
 
-        protected AppConfigrReader(IConfigSerializer serializer, ICacheService cacheService) {
+
+        protected AppConfigrReader(string configFileName, IConfigSerializer serializer, ICacheService cacheService) {
             _serializer = serializer;
             _cacheService = cacheService;
-            _directoryConfig = HttpContext.Current != null ? HttpContext.Current.Server.MapPath("~/") : HostingEnvironment.MapPath("~/");
+            _directoryConfig = (HttpContext.Current != null ? HttpContext.Current.Server.MapPath("~/") : HostingEnvironment.MapPath("~/")) ?? Directory.GetCurrentDirectory();
+            _fileNameSettings = string.IsNullOrEmpty(configFileName) ? "Config.json" : configFileName;
         }
-
-        protected AppConfigrReader(string configFileName, IConfigSerializer serializer, ICacheService cacheService)
-            : this(serializer, cacheService) {
-            _fileNameSettings = configFileName;
-        }
-
 
         /// <summary>
         /// Reload data from config file
         /// </summary>
         public void Reload() {
-
             _cacheService.Reset(CacheKey);
             DeserealizeSettings();
         }
@@ -49,14 +44,11 @@ namespace Calabonga.Portal.Config {
         public TValue ReadValue<TValue>(Expression<Func<T, TValue>> e) {
             var member = e.Body as MemberExpression;
             if (member == null)
-                throw new ArgumentException(string.Format(
-                    "Expression '{0}' refers to a method, not a property.", e));
+                throw new ArgumentException($"Expression '{e}' refers to a method, not a property.");
 
             var propInfo = member.Member as PropertyInfo;
             if (propInfo == null)
-                throw new ArgumentException(string.Format(
-                    "Expression '{0}' refers to a field, not a property.",
-                    e));
+                throw new ArgumentException($"Expression '{e}' refers to a field, not a property.");
 
             try {
 
@@ -70,7 +62,6 @@ namespace Calabonga.Portal.Config {
         public TValue ReadValue<TValue>(string propertyName) {
             var type = typeof(T);
             try {
-
                 return (TValue)type.GetProperty(propertyName).GetValue(Config);
             }
             catch (ArgumentNullException exception) {
@@ -87,8 +78,6 @@ namespace Calabonga.Portal.Config {
             Serialize(config);
         }
 
-
-
         /// <summary>
         /// Config instance
         /// </summary>
@@ -103,17 +92,21 @@ namespace Calabonga.Portal.Config {
                 return _appSettings;
             }
         }
-        private AppSettings DefaultSettings() {
-            return new AppSettings {
-                AdminEmail = "admin@domain.com",
-                DefaultPagerSize = 10,
-                DomainUrl = "http://www.domain.com",
-                IsHtmlForEmailMessagesEnabled = true,
-                IsLogging = true,
-                RobotEmail = "robot@domain.com",
-                SmtpClient = "localhost"
-            };
+
+        #region event OnLoaded
+
+        /// <summary>
+        /// Fire when configuration loaded
+        /// </summary>
+        public event ConfigurationLoadedEventHandler<T> ConfigurationLoaded;
+
+        protected virtual void OnConfigurationReloaded(ConfigurationLoadedEventHandlerArgs<T> args) {
+            ConfigurationLoaded?.Invoke(this, args);
         }
+
+        #endregion
+
+        #region private methods
 
         private T Import(string data) {
             try {
@@ -126,7 +119,7 @@ namespace Calabonga.Portal.Config {
         }
 
         private string CreateDefaultAppSettings() {
-            var settings = DefaultSettings();
+            var settings = new object();
             var o = _serializer.SerializeObject(settings);
             using (var sw = File.CreateText(Path.Combine(_directoryConfig, _fileNameSettings))) {
                 sw.Write(o);
@@ -142,7 +135,7 @@ namespace Calabonga.Portal.Config {
                 }
                 return data;
             }
-            catch (FileNotFoundException exception) {
+            catch (FileNotFoundException) {
                 return CreateDefaultAppSettings();
             }
             catch (DirectoryNotFoundException) {
@@ -150,16 +143,19 @@ namespace Calabonga.Portal.Config {
                 return CreateDefaultAppSettings();
             }
             catch {
-                return null;
+                return CreateDefaultAppSettings();
             }
         }
 
         private void DeserealizeSettings() {
             var data = LoadSettings();
+            if (data == null) {
+                return;
+            }
             _appSettings = Import(data);
             _cacheService.Insert(CacheKey, _appSettings, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(3));
+            OnConfigurationReloaded(new ConfigurationLoadedEventHandlerArgs<T> { Config = _appSettings });
         }
-
 
         private void Serialize(T config) {
             try {
@@ -171,7 +167,11 @@ namespace Calabonga.Portal.Config {
                 }
 
             }
-            catch { }
+            catch {
+                // ignored
+            }
         }
+
+        #endregion
     }
 }

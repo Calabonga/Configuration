@@ -1,13 +1,17 @@
 using System;
 using System.Linq.Expressions;
 
-namespace Calabonga.Portal.Config
-{
+namespace Calabonga.Configuration {
     /// <summary>
     /// Configuration service wrappper
     /// </summary>
     /// <typeparam name="TConfig"></typeparam>
     public interface IConfigService<TConfig> where TConfig : class {
+
+        /// <summary>
+        /// Event OnConfigurationLoaded
+        /// </summary>
+        event ConfigurationLoadedEventHandler<TConfig> ConfigurationLoaded;
 
         /// <summary>
         /// Application config
@@ -31,8 +35,8 @@ namespace Calabonga.Portal.Config
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
-        TValue ReadValue<TValue>(Expression<Func<TConfig, TValue>> propertiyExpression );
-        
+        TValue ReadValue<TValue>(Expression<Func<TConfig, TValue>> propertiyExpression);
+
         /// <summary>
         /// Read a value from configuration file
         /// </summary>
