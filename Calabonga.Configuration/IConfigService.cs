@@ -9,6 +9,16 @@ namespace Calabonga.Configuration {
     public interface IConfigService<TConfig> where TConfig : class {
 
         /// <summary>
+        /// Config file location folder
+        /// </summary>
+        string DirectoryName { get; }
+
+        /// <summary>
+        /// Config file name
+        /// </summary>
+        string FileName { get; }
+
+        /// <summary>
         /// Event OnConfigurationLoaded
         /// </summary>
         event ConfigurationLoadedEventHandler<TConfig> ConfigurationLoaded;

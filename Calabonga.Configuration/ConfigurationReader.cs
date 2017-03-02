@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq.Expressions;
+using System.Net;
 using System.Reflection;
 using System.Web;
 using System.Web.Caching;
@@ -12,20 +13,17 @@ namespace Calabonga.Configuration {
     /// Configuration reader
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class AppConfigrReader<T> : IConfigService<T> where T : class {
+    public abstract class ConfigurationReader<T> : IConfigService<T> where T : class {
         private const string CacheKey = "MvcConfigKeyName";
         private T _appSettings;
-        private readonly string _fileNameSettings;
+        //private readonly string _fileNameSettings;
         private readonly ICacheService _cacheService;
         private readonly IConfigSerializer _serializer;
-        private readonly string _directoryConfig;
+        //private readonly string _directoryConfig;
 
-
-        protected AppConfigrReader(string configFileName, IConfigSerializer serializer, ICacheService cacheService) {
+        protected ConfigurationReader(IConfigSerializer serializer, ICacheService cacheService) {
             _serializer = serializer;
             _cacheService = cacheService;
-            _directoryConfig = (HttpContext.Current != null ? HttpContext.Current.Server.MapPath("~/") : HostingEnvironment.MapPath("~/")) ?? Directory.GetCurrentDirectory();
-            _fileNameSettings = string.IsNullOrEmpty(configFileName) ? "Config.json" : configFileName;
         }
 
         /// <summary>
@@ -59,6 +57,12 @@ namespace Calabonga.Configuration {
             }
         }
 
+        /// <summary>
+        /// ReadValue from configuration
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public TValue ReadValue<TValue>(string propertyName) {
             var type = typeof(T);
             try {
@@ -106,6 +110,25 @@ namespace Calabonga.Configuration {
 
         #endregion
 
+        /// <summary>
+        /// Configuration folder
+        /// </summary>
+        public virtual string DirectoryName {
+            get {
+                return (HttpContext.Current != null ? HttpContext.Current.Server.MapPath("~/") : HostingEnvironment.MapPath("~/")) ?? Directory.GetCurrentDirectory();
+            }
+        }
+
+        /// <summary>
+        /// Configuration FileName
+        /// </summary>
+        public virtual string FileName {
+            get {
+                return "Config.json";
+            }
+        }
+
+
         #region private methods
 
         private T Import(string data) {
@@ -121,7 +144,7 @@ namespace Calabonga.Configuration {
         private string CreateDefaultAppSettings() {
             var settings = new object();
             var o = _serializer.SerializeObject(settings);
-            using (var sw = File.CreateText(Path.Combine(_directoryConfig, _fileNameSettings))) {
+            using (var sw = File.CreateText(Path.Combine(DirectoryName, FileName))) {
                 sw.Write(o);
             }
             return o;
@@ -130,7 +153,7 @@ namespace Calabonga.Configuration {
         private string LoadSettings() {
             try {
                 string data;
-                using (var fs = File.OpenText(Path.Combine(_directoryConfig, _fileNameSettings))) {
+                using (var fs = File.OpenText(Path.Combine(DirectoryName, FileName))) {
                     data = fs.ReadToEnd();
                 }
                 return data;
@@ -139,10 +162,7 @@ namespace Calabonga.Configuration {
                 return CreateDefaultAppSettings();
             }
             catch (DirectoryNotFoundException) {
-                Directory.CreateDirectory(_directoryConfig);
-                return CreateDefaultAppSettings();
-            }
-            catch {
+                Directory.CreateDirectory(DirectoryName);
                 return CreateDefaultAppSettings();
             }
         }
@@ -161,7 +181,7 @@ namespace Calabonga.Configuration {
             try {
                 var data = _serializer.SerializeObject(config);
                 if (data != null) {
-                    using (var sw = File.CreateText(Path.Combine(_directoryConfig, _fileNameSettings))) {
+                    using (var sw = File.CreateText(Path.Combine(DirectoryName, FileName))) {
                         sw.Write(data);
                     }
                 }

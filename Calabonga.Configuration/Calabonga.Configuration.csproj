@@ -49,8 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppConfigrReader.cs" />
-    <Compile Include="ConfigServiceBase.cs" />
+    <Compile Include="ConfigurationReader.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="ConfigurationLoadedEventHandlerArgs.cs" />
     <Compile Include="ConfigurationLoadedEventHandler.cs" />
     <Compile Include="XmlConfigSerializer.cs" />
