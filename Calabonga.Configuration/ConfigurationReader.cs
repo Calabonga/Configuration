@@ -13,12 +13,10 @@ namespace Calabonga.Configurations {
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class ConfigurationReader<T> : IConfigService<T> where T : class {
-        private const string CacheKey = "MvcConfigKeyName";
+        private const string CacheKey = "Calabonga.Configurations.ConfigKeyName";
         private T _appSettings;
-        //private readonly string _fileNameSettings;
         private readonly ICacheService _cacheService;
         private readonly IConfigSerializer _serializer;
-        //private readonly string _directoryConfig;
 
         protected ConfigurationReader(IConfigSerializer serializer, ICacheService cacheService) {
             _serializer = serializer;
@@ -29,7 +27,7 @@ namespace Calabonga.Configurations {
         /// Reload data from config file
         /// </summary>
         public void Reload() {
-            _cacheService.Reset(CacheKey);
+            _cacheService.Reset(GetCacheKeyName());
             DeserealizeSettings();
         }
 
@@ -39,8 +37,7 @@ namespace Calabonga.Configurations {
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
         public TValue ReadValue<TValue>(Expression<Func<T, TValue>> e) {
-            var member = e.Body as MemberExpression;
-            if (member == null)
+            if (!(e.Body is MemberExpression member))
                 throw new ArgumentException($"Expression '{e}' refers to a method, not a property.");
 
             var propInfo = member.Member as PropertyInfo;
@@ -65,7 +62,7 @@ namespace Calabonga.Configurations {
         public TValue ReadValue<TValue>(string propertyName) {
             var type = typeof(T);
             try {
-                return (TValue)type.GetProperty(propertyName).GetValue(Config);
+                return (TValue)type.GetProperty(propertyName)?.GetValue(Config);
             }
             catch (ArgumentNullException exception) {
                 throw new ArgumentNullException(@"Property not found in configuration", exception);
@@ -87,7 +84,7 @@ namespace Calabonga.Configurations {
         public T Config {
             get {
                 if (_appSettings == null) {
-                    _appSettings = _cacheService.Read<T>(CacheKey);
+                    _appSettings = _cacheService.Read<T>(GetCacheKeyName());
                     if (_appSettings == null) {
                         DeserealizeSettings();
                     }
@@ -126,7 +123,6 @@ namespace Calabonga.Configurations {
                 return "Config.json";
             }
         }
-
 
         #region private methods
 
@@ -172,7 +168,7 @@ namespace Calabonga.Configurations {
                 return;
             }
             _appSettings = Import(data);
-            _cacheService.Insert(CacheKey, _appSettings, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(3));
+            _cacheService.Insert(GetCacheKeyName(), _appSettings, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(3));
             OnConfigurationReloaded(new ConfigurationLoadedEventHandlerArgs<T> { Config = _appSettings });
         }
 
@@ -184,11 +180,15 @@ namespace Calabonga.Configurations {
                         sw.Write(data);
                     }
                 }
-
             }
             catch {
                 // ignored
             }
+        }
+
+        private string GetCacheKeyName()
+        {
+            return $"{CacheKey}_{FileName.Replace('.','_')}";
         }
 
         #endregion
