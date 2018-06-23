@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Calabonga SOFT")]
 [assembly: AssemblyProduct("Calabonga.Configuration")]
-[assembly: AssemblyCopyright("Copyright © Calabonga SOFT 2014-2017")]
+[assembly: AssemblyCopyright("Copyright © Calabonga SOFT 2014-2018")]
 [assembly: AssemblyTrademark("Calabonga")]
 [assembly: AssemblyCulture("")]
 
@@ -32,4 +32,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.*")]
-[assembly: AssemblyFileVersion("2.0.3.0")]
+[assembly: AssemblyFileVersion("2.0.0.0")]

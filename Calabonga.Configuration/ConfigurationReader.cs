@@ -145,6 +145,22 @@ namespace Calabonga.Configurations {
             return o;
         }
 
+        protected static string LoadFromFile(string fileName)
+        {
+            try {
+                string data;
+                var directoryName = (HttpContext.Current != null ? HttpContext.Current.Server.MapPath("~/") : HostingEnvironment.MapPath("~/")) ?? Directory.GetCurrentDirectory();
+                using (var fs = File.OpenText(Path.Combine(directoryName, fileName))) {
+                    data = fs.ReadToEnd();
+                }
+                return data;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         private string LoadSettings() {
             try {
                 string data;
