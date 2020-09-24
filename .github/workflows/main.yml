@@ -22,5 +22,5 @@ jobs:
     - name: Publish Calabonga.Configuration.Json
       uses: brandedoutcast/publish-nuget@v2.5.2
       with:
-          PROJECT_FILE_PATH: Calabonga.Configuration.Core/Calabonga.Configuration.Json/Calabonga.Configuration.Json.csproj
+          PROJECT_FILE_PATH: Configuration/Calabonga.Configuration.Core/Calabonga.Configuration.Json/Calabonga.Configuration.Json.csproj
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
