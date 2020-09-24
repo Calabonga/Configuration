@@ -10,7 +10,7 @@
     <Description>Configuration and settings manger</Description>
     <PackageProjectUrl>https://www.calabonga.net</PackageProjectUrl>
     <PackageIconUrl>https://www.calabonga.net/images/logo.png</PackageIconUrl>
-    <Copyright>Calabonga SOFT © 2019</Copyright>
+    <Copyright>Calabonga SOFT © 2019-2020</Copyright>
     <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
     <PackageTags>calabonga configuration saver loader</PackageTags>
     <PackageReleaseNotes>First Release</PackageReleaseNotes>
