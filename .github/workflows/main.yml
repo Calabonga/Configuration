@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: 3.1.301
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore Calabonga.Configuration.Json.sln
     - name: Build
       run: dotnet build Calabonga.Configuration.Json.sln --configuration Release --no-restore 
     - name: Publish Calabonga.Configuration.Json
