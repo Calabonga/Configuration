@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+    <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'netcoreapp2.2'">2.2.0-*</RuntimeFrameworkVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
+    <Authors>Calabonga</Authors>
+    <Company>Calabonga SOFT</Company>
+    <Description>Configuration and settings manger</Description>
+    <PackageProjectUrl>https://www.calabonga.net</PackageProjectUrl>
+    <PackageIconUrl>https://www.calabonga.net/images/logo.png</PackageIconUrl>
+    <Copyright>Calabonga SOFT © 2019</Copyright>
+    <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
+    <PackageTags>calabonga configuration saver loader</PackageTags>
+    <PackageReleaseNotes>First Release</PackageReleaseNotes>
+    <PackageIcon>logo.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="logo.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,29 @@
+﻿<Window x:Class="Calabonga.Configuration.Core.Wpf3_1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Calabonga.Configuration.Core.Wpf3_1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75*"/>
+            <RowDefinition Height="359*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="67*"/>
+            <ColumnDefinition Width="233*"/>
+            <ColumnDefinition Width="500*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <TextBlock Text="Name" TextWrapping="Wrap" Margin="5"/>
+            <TextBox Margin="5" Text="{Binding Name}"/>
+            <TextBlock Text="{Binding Name}" Margin="5"/>
+            <TextBlock Text="Email" TextWrapping="Wrap" Margin="5"/>
+            <TextBox Margin="5" Text="{Binding Email}"/>
+            <Button Margin="5" Content="Save"/>
+        </StackPanel>
+
+    </Grid>
+</Window>
