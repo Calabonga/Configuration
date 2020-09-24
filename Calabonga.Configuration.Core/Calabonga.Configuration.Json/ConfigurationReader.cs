@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Calabonga.Configuration.Core
+namespace Calabonga.Configuration.Json
 {
 
     /// <summary>

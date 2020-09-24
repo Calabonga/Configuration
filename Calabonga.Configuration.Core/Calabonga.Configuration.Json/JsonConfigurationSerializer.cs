@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Calabonga.Configuration.Core {
+namespace Calabonga.Configuration.Json {
 
     /// <summary>
     /// Configuration serializer for JSON-format

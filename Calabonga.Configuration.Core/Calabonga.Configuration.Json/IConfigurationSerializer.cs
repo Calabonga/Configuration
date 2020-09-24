@@ -1,4 +1,4 @@
-namespace Calabonga.Configuration.Core {
+namespace Calabonga.Configuration.Json {
 
     /// <summary>
     /// Serializer for config file

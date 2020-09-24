@@ -4,7 +4,7 @@
     <TargetFrameworks>netcoreapp2.2;netcoreapp3.1;netstandard2.1</TargetFrameworks>
     <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'netcoreapp2.2'">2.2.0-*</RuntimeFrameworkVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Calabonga</Authors>
     <Company>Calabonga SOFT</Company>
     <Description>Configuration and settings manger</Description>
@@ -13,8 +13,9 @@
     <Copyright>Calabonga SOFT © 2019-2020</Copyright>
     <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
     <PackageTags>calabonga configuration saver loader</PackageTags>
-    <PackageReleaseNotes>First Release</PackageReleaseNotes>
+    <PackageReleaseNotes>Video manual evailable https://youtu.be/zWHxMxyDHEQ</PackageReleaseNotes>
     <PackageIcon>logo.png</PackageIcon>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

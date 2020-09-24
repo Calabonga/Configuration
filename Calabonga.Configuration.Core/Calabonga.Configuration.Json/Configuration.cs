@@ -1,4 +1,6 @@
-namespace Calabonga.Configuration.Core
+using Calabonga.Configuration.Json;
+
+namespace Calabonga.Configuration.Json
 {
 
     /// <summary>
